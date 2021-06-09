@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> ISS Location</title>
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+    integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+    crossorigin=""/>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+    integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+    crossorigin=""></script>
+</head>
+<body style="background:whitesmoke;">
+    <h1 style = "text-align: center; color: blueviolet;">Location of ISS</h1>
+
+    <p style="text-align: center; color: turquoise;">
+        Latitude :
+        <span id = "lat" ></span>
+        <br>
+        Longitude :
+        <span id = "long"></span>
+        
+    </p>
+    <div id="mapid" style="height: 380px;border: cyan;"></div>
+
+    <script>
+         
+       // Making Map and tiles 
+        
+        const mymap = L.map('mapid').setView([0,0], 1); 
+
+        const attribution = 
+           '&copy; <a href ="https://www.openstreetmap.org/copyright">OpenStreetMap </a> contributors';
+
+        const tile_url = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+        const tiles = L.tileLayer(tile_url, {attribution});
+        tiles.addTo(mymap);
+
+        const myIcon = L.icon({
+        iconUrl: '320px-International_Space_Station.svg.png',
+        iconSize: [70 ,52],
+        iconAnchor : [25, 16]
+
+         });
+        
+    
+         // Get logitude and latitide of Iss
+        const url = 'https://api.wheretheiss.at/v1/satellites/25544';
+      
+        async  function getData()
+        {
+            const response = await fetch(url);
+            const data = await response.json();
+            const longitude = data.longitude;
+            const latitude = data.latitude;
+            L.marker([latitude , longitude],{icon : myIcon}).addTo(mymap);
+            mymap.setView([latitude ,longitude] , 2);
+            document.getElementById('lat').textContent = latitude;
+            document.getElementById('long').textContent =longitude;
+            
+            
+        }
+        getData();
+
+        
+       
+    </script>
+    
+</body>
+</html>
